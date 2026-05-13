@@ -1,35 +1,62 @@
-Java DBMS Engine
+# Java DBMS Engine
 
 A lightweight educational Database Management System built in Java from scratch using a client-server architecture.
-The project demonstrates core DBMS concepts including SQL parsing, in-memory buffering, disk persistence, socket communication, and basic query execution.
 
-Overview
+This project demonstrates core DBMS concepts such as SQL parsing, in-memory buffering, disk persistence, socket communication, and basic query execution.
+
+---
+
+## Overview
 
 This project simulates how a simple database engine works internally.
 
-The system supports:
+It was built to understand how real database systems manage memory, storage, and query execution.
 
-Creating tables
-Inserting rows
-Selecting data
-Loading data into memory
-Persisting data to disk
-Client-server communication using sockets
-Basic SQL query parsing
+---
 
-The architecture was designed to help understand how real database systems manage memory, storage, and query execution.
+## Features
 
-Features
-Supported SQL Operations
-Create Table
+- Create tables
+- Insert rows
+- Select data
+- Load database data into memory
+- Persist database data to disk
+- Client-server communication using sockets
+- Basic SQL query parsing
+
+---
+
+## Supported SQL Operations
+
+### Create Table
+
+```sql
 CREATE TABLE users (username VARCHAR, age INT, salary FLOAT);
-Insert Rows
+```
+
+### Insert Rows
+
+```sql
 INSERT INTO users (username,age,salary) VALUES ('user1',20,100.0);
-Select All Columns
+```
+
+### Select All Columns
+
+```sql
 SELECT * FROM users;
-Select Specific Columns
+```
+
+### Select Specific Columns
+
+```sql
 SELECT username,age FROM users;
-System Architecture
+```
+
+---
+
+## System Architecture
+
+```text
 ClientSide
     ↓
 ServerSide
@@ -39,85 +66,110 @@ SQLParser
 BufferPoolManager
     ↓
 DiskManager
-Core Components
-ClientSide
+```
+
+---
+
+## Core Components
+
+### ClientSide
 
 Responsible for:
 
-Connecting to the server
-Sending database requests
-Reading responses from the server
-Handling user input
+- Connecting to the server
+- Sending database requests
+- Reading responses from the server
+- Handling user input
 
 Communication happens using Java sockets.
 
-ServerSide
+---
+
+### ServerSide
 
 Responsible for:
 
-Accepting client connections
-Performing handshake validation
-Receiving SQL queries
-Routing operations to the correct database components
+- Accepting client connections
+- Performing handshake validation
+- Receiving SQL queries
+- Routing operations to the correct database components
 
-The server continuously listens for incoming client requests.
+The server listens for incoming client requests and processes SQL commands.
 
-SQLParser
+---
 
-Converts raw SQL text into structured Java objects.
+### SQLParser
+
+Responsible for converting raw SQL text into structured Java objects.
 
 The parser currently supports:
 
-CREATE TABLE
-INSERT INTO
-SELECT
+- `CREATE TABLE`
+- `INSERT INTO`
+- `SELECT`
 
 It extracts:
 
-Operation type
-Table name
-Column names
-Column types
-Values
-BufferPoolManager
+- Operation type
+- Table name
+- Column names
+- Column types
+- Values
+
+---
+
+### BufferPoolManager
 
 Acts as the in-memory database layer.
 
-Responsibilities include:
+Responsible for:
 
-Loading database pages into RAM
-Managing tables and rows
-Executing create/insert/select operations
-Tracking dirty pages
-Writing modified pages back to disk
+- Loading database data into RAM
+- Managing tables and rows
+- Executing create, insert, and select operations
+- Tracking dirty pages
+- Writing modified data back to disk
 
 The project follows a simplified buffering strategy:
 
+```text
 Load entire database into memory
-↓
+        ↓
 Modify data in RAM
-↓
+        ↓
 Write updated data back to disk
-DiskManager
+```
+
+---
+
+### DiskManager
 
 Handles persistent storage.
 
-Responsibilities include:
+Responsible for:
 
-Creating database files
-Writing serialized objects to disk
-Reading serialized objects from disk
+- Creating database files
+- Writing serialized objects to disk
+- Reading serialized objects from disk
 
-The project uses Java object serialization for persistence.
+The project uses Java Object Serialization for persistence.
 
-Technologies Used
-Java
-Java Sockets
-Object Serialization
-Collections Framework
-File I/O
-Client-Server Architecture
-Project Structure
+---
+
+## Technologies Used
+
+- Java
+- Java Sockets
+- Object Serialization
+- Java Collections Framework
+- File I/O
+- Client-Server Architecture
+
+---
+
+## Project Structure
+
+```text
 ├── ClientMain.java
 ├── ClientSide.java
 ├── ServerMain.java
@@ -125,79 +177,135 @@ Project Structure
 ├── SQLParser.java
 ├── BufferPoolManager.java
 ├── DiskManager.java
-How It Works
-Step 1 — Start the Server
+```
+
+---
+
+## How It Works
+
+### Step 1: Start the Server
 
 Run:
 
+```text
 ServerMain.java
+```
 
 The server starts listening on:
 
+```text
 localhost:9090
-Step 2 — Start the Client
+```
+
+---
+
+### Step 2: Start the Client
 
 Run:
 
+```text
 ClientMain.java
+```
 
 The client connects to the server and asks for a database name.
 
 Example:
 
+```text
 Enter database name: testDB
-Step 3 — Send SQL Queries
+```
+
+---
+
+### Step 3: Send SQL Queries
 
 Example:
 
+```sql
 CREATE TABLE users (username VARCHAR, age INT, salary FLOAT);
+```
+
+```sql
 INSERT INTO users (username,age,salary) VALUES ('user1',20,100.0);
+```
+
+```sql
 SELECT * FROM users;
-Example Workflow
-Create Table
+```
+
+---
+
+## Example Workflow
+
+### Create Table
+
+```sql
 CREATE TABLE users (username VARCHAR, age INT, salary FLOAT);
-Insert Data
+```
+
+### Insert Data
+
+```sql
 INSERT INTO users (username,age,salary) VALUES ('user1',20,100.0);
-Select Data
+```
+
+### Select Data
+
+```sql
 SELECT * FROM users;
+```
 
-Output:
+### Output
 
+```text
 [{salary=100.0, age=20, username='user1'}]
-Database Persistence
+```
+
+---
+
+## Database Persistence
 
 The database state is stored on disk using serialized Java objects.
 
 When the application starts:
 
-Existing database pages are loaded into RAM
-If no database exists, a new disk file is created
+- Existing database data is loaded into RAM
+- If no database file exists, a new disk file is created
+- Modified data is written back to disk after changes
 
-Dirty pages are automatically written back to disk after modifications.
+---
 
-Learning Objectives
+## Learning Objectives
 
-This project was built to deeply understand:
+This project was built to deeply understand core DBMS concepts, including:
 
-DBMS internal architecture:
+- DBMS internal architecture
+- Buffer pool management
+- Disk persistence
+- SQL parsing
+- Query execution flow
+- Client-server networking
+- Serialization and storage management
 
-Buffer pool management
-Disk persistence
-SQL parsing
-Query execution flow
-Client-server networking
-Serialization and storage management
+---
 
+## Future Improvements
 
-Future Improvements:
+- WHERE clause support
+- UPDATE and DELETE operations
+- Query planner
+- Indexing
+- Page-based storage
+- Transaction management
+- Concurrency control
+- Better SQL grammar support
+- Type validation
+- Multi-client handling using threads
 
-WHERE clause support
-UPDATE and DELETE operations
-Query planner
-Indexing
-Page-based storage
-Transaction management
-Concurrency control
-Better SQL grammar support
-Type validation
-Multi-client handling using threads
+---
+
+## Author
+
+**Kholoud Shaarawy**
+
+Java Developer interested in backend development, database internals, and building systems from scratch.
