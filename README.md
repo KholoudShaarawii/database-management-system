@@ -303,9 +303,3 @@ This project was built to deeply understand core DBMS concepts, including:
 - Multi-client handling using threads
 
 ---
-
-## Author
-
-**Kholoud Shaarawy**
-
-Java Developer interested in backend development, database internals, and building systems from scratch.
