@@ -136,10 +136,16 @@ public class ServerSide {
 
             out.println("Request received");
             if ("create".equals(parser.getOperationType())) {
-                String result = queryExecutor.createTable(parser);                out.println(result);
+                String result = queryExecutor.createTable(parser);
+                out.println(result);
             } else if ("insert".equals(parser.getOperationType())) {
-                queryExecutor.insertRow(parser);
-                out.println("Insert done");
+                if (bufferPoolManager.tables.containsKey(parser.getTableName())) {
+                    queryExecutor.insertRow(parser);
+                    out.println("Insert done");
+                } else {
+                    out.println("Table does not exist");
+                }
+
             } else if ("select".equals(parser.getOperationType())) {
                 List<Map<String, Object>> result = queryExecutor.selectRows(parser);
                 out.println((result));
