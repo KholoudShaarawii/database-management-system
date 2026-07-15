@@ -1,3 +1,7 @@
+package com.db.dbms.application;
+
+import com.db.dbms.client.ClientSide;
+
 import java.io.IOException;
 
 public class ClientMain {

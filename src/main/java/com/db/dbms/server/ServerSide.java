@@ -1,3 +1,9 @@
+package com.db.dbms.server;
+
+import com.db.dbms.storage.BufferPoolManager;
+import com.db.dbms.parser.SQLParser;
+import com.db.dbms.execution.QueryExecutor;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,10 +14,11 @@ import java.util.stream.Collectors;
 
 public class ServerSide {
 
-    ServerSocket serverSocket;
-    String host;
-    int port;
-    BufferPoolManager bufferPoolManager = new BufferPoolManager();
+    private ServerSocket serverSocket;
+    private String host;
+    private int port;
+    private BufferPoolManager bufferPoolManager = new BufferPoolManager();
+    QueryExecutor queryExecutor = new QueryExecutor(bufferPoolManager);
 
     public ServerSide() throws IOException, ClassNotFoundException {
         setupServer();
@@ -60,13 +67,13 @@ public class ServerSide {
             System.out.println("Client port: " + socket.getPort());
 
             String dbName = this.read_db(socket);
-            //     if (dbName != null) {
-            handleConnection(socket, dbName);
-           /* } else {// Close the socket connection
+
+            if (dbName == null) {
                 socket.close();
                 System.out.println("Socket is closed!");
-
-            }*/
+                continue;
+            }
+            handleConnection(socket, dbName);
         }
     }
 
@@ -113,8 +120,7 @@ public class ServerSide {
         }
     }
 
-    //_handle_connection() = request-response loop for one connected client
-    //requests? select , insert , create
+    //handle_connection() = request-response loop for one connected client
     public void handleConnection(Socket socket, String dbName) throws IOException, ClassNotFoundException {
 
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -129,14 +135,13 @@ public class ServerSide {
             SQLParser parser = new SQLParser(query);
 
             out.println("Request received");
-            if ("create".equals(parser.operationType)) {
-                String result = bufferPoolManager.create_table(parser);
-                out.println(result);
-            } else if ("insert".equals(parser.operationType)) {
-                bufferPoolManager.insert_row(parser);
+            if ("create".equals(parser.getOperationType())) {
+                String result = queryExecutor.createTable(parser);                out.println(result);
+            } else if ("insert".equals(parser.getOperationType())) {
+                queryExecutor.insertRow(parser);
                 out.println("Insert done");
-            } else if ("select".equals(parser.operationType)) {
-                List<Map<String, Object>> result = bufferPoolManager.select_rows(parser);
+            } else if ("select".equals(parser.getOperationType())) {
+                List<Map<String, Object>> result = queryExecutor.selectRows(parser);
                 out.println((result));
             } else {
                 out.println("Unknown operation");

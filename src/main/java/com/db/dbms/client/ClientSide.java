@@ -1,3 +1,5 @@
+package com.db.dbms.client;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -25,7 +27,11 @@ public class ClientSide {
             System.out.println("Server: " + serverInput.readLine());
             System.out.println("Server: " + serverInput.readLine());
 
-            String userRequest = "";
+            if (dbName == null || dbName.isBlank()) {
+                clientSocket.close();
+                return;
+            }
+            String userRequest ;
             while (true) {
                 System.out.print("Enter request: ");
                 userRequest = userInput.readLine();
